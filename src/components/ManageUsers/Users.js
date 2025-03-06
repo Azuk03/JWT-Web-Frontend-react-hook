@@ -27,9 +27,9 @@ const Users = (props) => {
 
   const fetchUsers = async () => {
     let response = await fetchAllUsers(currentPage, currentLimit);
-    if (response && response.data && response.data.EC === 0) {
-      setListUsers(response.data.DT.users);
-      setTotalPages(response.data.DT.totalPages);
+    if (response && response.EC === 0) {
+      setListUsers(response.DT.users);
+      setTotalPages(response.DT.totalPages);
     }
   };
 
@@ -44,12 +44,12 @@ const Users = (props) => {
 
   const confirmDeleteUser = async () => {
     let response = await deleteAUser(dataModal);
-    if (response && response.data.EC === 0) {
-      toast.success(response.data.EM);
+    if (response && response.EC === 0) {
+      toast.success(response.EM);
       await fetchUsers();
       setIsShowModalDelete(false);
     } else {
-      toast.error(response.data.EM);
+      toast.error(response.EM);
     }
   };
 
@@ -75,11 +75,11 @@ const Users = (props) => {
       <div className="container">
         <div className="manage-users-container">
           <div className="user-header">
-            <div className="title">
-              <h3>Table Users</h3>
+            <div className="title mt-3">
+              <h3>Manage Users</h3>
             </div>
-            <div className="actions">
-              <button className="btn btn-success">Refresh</button>
+            <div className="actions my-3">
+              <button className="btn btn-success refresh"><i className="fa fa-refresh"></i>Refresh</button>
               <button
                 className="btn btn-primary"
                 onClick={() => {
@@ -87,6 +87,7 @@ const Users = (props) => {
                   setActionModalUser("CREATE");
                 }}
               >
+                <i className="fa fa-plus-circle"></i>
                 Add new User
               </button>
             </div>
@@ -118,7 +119,7 @@ const Users = (props) => {
                           <td>{item.Group ? item.Group.name : ""}</td>
                           <td>
                             <button
-                              className="btn btn-warning"
+                              className="btn btn-warning refresh"
                               onClick={() => handleEditUser(item)}
                             >
                               Edit
