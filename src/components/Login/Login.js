@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./Login.scss";
-import { useHistory } from "react-router-dom";
+import { useHistory, useContext } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LoginUser } from "../../services/userService";
+import { UserContext } from "../../context/UserContext";
 
 const Login = (props) => {
+  const {loginContext} = React.useContext(UserContext);
   let history = useHistory();
 
   const [valueLogin, setvalueLogin] = useState("");
   const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    let session = sessionStorage.getItem("account");
-    if (session) {
-      history.push("/");
-      window.location.reload();
-    }
-  }, []);
 
   const defaultObjValidInput = {
     isValidValueLogin: true,
@@ -43,13 +37,20 @@ const Login = (props) => {
 
     let response = await LoginUser(valueLogin, password);
     if (response && +response.EC === 0) {
+      let groupWithRoles = response.DT.groupWithRoles;
+      let email = response.DT.email;
+      let username = response.DT.username;
+      let token = response.DT.access_token;
       let data = {
         isAuthenticated: true,
-        token: "faketoken",
+        token,
+        account: {groupWithRoles, email, username}
       };
-      sessionStorage.setItem("account", JSON.stringify(data));
+
+      localStorage.setItem("jwt",token);
+      loginContext(data);
       history.push("/users");
-      window.location.reload();
+      // window.location.reload();
     }
 
     if (response && +response.EC !== 0) {
