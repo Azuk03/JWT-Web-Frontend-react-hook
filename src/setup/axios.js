@@ -26,8 +26,12 @@ instance.interceptors.response.use(function (response) {
     const status = error && error.response && error.response.status || 500;
     switch (status) {
         case 401:
-            toast.error("Unauthorized");
-            return error.response.data
+            {
+              if(window.location.pathname !== '/' && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+                toast.error("Unauthorized");
+              }
+              return error.response.data
+            }
         case 403:
             toast.error("Forbidden");
             return error.response.data
